@@ -1,0 +1,36 @@
+.notice {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  border: 2px solid;
+  border-radius: 14px;
+  animation: rise-in 0.35s ease both;
+}
+
+.notice--warn {
+  background: #fffbeb;
+  border-color: var(--gold-300);
+  color: #6b4208;
+}
+
+.notice--error {
+  background: #fef2f2;
+  border-color: #f5b5b5;
+  color: var(--red-900);
+}
+
+.notice__icon {
+  flex: none;
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.notice__title {
+  font: 700 1.0625rem/1.4 var(--font-serif);
+}
+
+.notice__text {
+  margin-top: 0.125rem;
+  font-size: 0.9375rem;
+}

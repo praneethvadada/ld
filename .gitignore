@@ -1,0 +1,18 @@
+# Dependencies and build output
+node_modules/
+dist/
+
+# Environment files hold the participant list and must never be committed
+.env
+.env.*
+!.env.example
+
+# Real participant sheets: import them, then keep them out of the repository
+*.csv
+*.xlsx
+*.xls
+!backend/seed/participants.sample.csv
+
+# Logs and OS files
+*.log
+.DS_Store

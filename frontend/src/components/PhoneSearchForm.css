@@ -1,0 +1,99 @@
+.phone-form__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--green-950);
+}
+
+.phone-field {
+  display: flex;
+  align-items: stretch;
+  height: 60px;
+  border: 2px solid #cfe3c8;
+  border-radius: 999px;
+  background: #fff;
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.phone-field:focus-within {
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 4px rgba(42, 109, 32, 0.16);
+}
+
+.phone-field--invalid,
+.phone-field--invalid:focus-within {
+  border-color: var(--red-600);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+}
+
+.phone-field__prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem 0 1.125rem;
+  border-right: 1px solid #cfe3c8;
+  background: #f3f9ef;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--green-950);
+}
+
+.phone-field__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 1rem 0 0.75rem;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--green-950);
+}
+
+.phone-field__input::placeholder {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #7f9978;
+}
+
+.phone-form__error {
+  margin-top: 0.5rem;
+  padding-inline: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--red-800);
+}
+
+.phone-form__submit {
+  min-height: 56px;
+  margin-top: 1rem;
+  font-size: 1.125rem;
+}
+
+.phone-form__hint {
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: #56734e;
+}
+
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid rgba(31, 72, 28, 0.25);
+  border-top-color: var(--green-950);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

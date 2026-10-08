@@ -1,0 +1,126 @@
+.site-footer {
+  background: var(--green-900);
+  color: #d3efcc;
+}
+
+.site-footer__grid {
+  display: grid;
+  gap: 2.5rem;
+  padding-block: 2.5rem;
+}
+
+.footer-brand__name {
+  font: 700 1.5rem/1.2 var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--gold-200);
+}
+
+.footer-brand__tagline {
+  margin-top: 0.75rem;
+  font-style: italic;
+  color: #e4f8dc;
+}
+
+.footer-brand__about {
+  margin-top: 1rem;
+  max-width: 26rem;
+  line-height: 1.7;
+}
+
+.footer-brand__about strong {
+  color: #f3fbef;
+  font-weight: 600;
+}
+
+.footer-heading {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-200);
+}
+
+.footer-contact {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.footer-contact__icon {
+  flex: none;
+  font-size: 0.9375rem;
+}
+
+.footer-contact__phones {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.75rem;
+  row-gap: 0.25rem;
+}
+
+.footer-contact a {
+  color: #f3fbef;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.footer-contact a:hover {
+  color: var(--gold-200);
+}
+
+.footer-contact__phones a {
+  position: relative;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+/* The "·" between phone numbers, as on the main site. */
+.footer-contact__phones a + a::before {
+  content: '·';
+  position: absolute;
+  left: -1rem;
+  color: #d3efcc;
+}
+
+.footer-branches {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.footer-branches__title {
+  margin-bottom: 0.5rem;
+  font: 700 0.875rem/1.4 var(--font-serif);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e5d178;
+}
+
+.footer-branches p + p {
+  margin-top: 0.625rem;
+}
+
+.footer-branches strong {
+  color: #f6f8ce;
+  font-weight: 600;
+}
+
+.site-footer__bottom {
+  padding-block: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.875rem;
+  text-align: center;
+  color: #bfe9b8;
+}
+
+@media (min-width: 900px) {
+  .site-footer__grid {
+    grid-template-columns: 5fr 6fr;
+    gap: 5rem;
+    padding-block: 4rem;
+  }
+}

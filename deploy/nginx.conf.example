@@ -1,0 +1,50 @@
+# Nginx site for the Ganesh lucky draw.
+#
+#   sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/lucky-draw
+#   sudo ln -s /etc/nginx/sites-available/lucky-draw /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# Replace luckydraw.example.com and /var/www/ganesh-lucky-draw with your own values.
+# Add HTTPS afterwards with:  sudo certbot --nginx -d luckydraw.example.com
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name luckydraw.example.com;
+
+    root /var/www/ganesh-lucky-draw/frontend/dist;
+    index index.html;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+
+    # API: forwarded to the Node backend (PORT in backend/.env).
+    location /api/ {
+        proxy_pass http://127.0.0.1:5050;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        # The backend rate limiter reads the visitor's address from this header (TRUST_PROXY=1).
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 15s;
+    }
+
+    # Built assets have a content hash in their file name, so they can be cached for a long time.
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # Everything else is the single-page app. Always revalidate index.html so updates show immediately.
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
+}

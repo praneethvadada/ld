@@ -1,0 +1,39 @@
+.blessing {
+  padding-bottom: 3.5rem;
+}
+
+.blessing__panel {
+  padding: 2.5rem 1.5rem;
+  border-radius: 24px;
+  background: var(--green-900);
+  color: #ddf7d6;
+  text-align: center;
+}
+
+.blessing__title {
+  font: 700 clamp(1.75rem, 5.5vw, 2.25rem) / 1.15 var(--font-serif);
+  letter-spacing: -0.01em;
+  color: var(--gold-200);
+}
+
+.blessing__text {
+  max-width: 48rem;
+  margin: 1rem auto 0;
+  font-size: clamp(1rem, 2.4vw, 1.125rem);
+  line-height: 1.6;
+}
+
+.blessing__action {
+  margin-top: 1.75rem;
+}
+
+@media (min-width: 900px) {
+  .blessing {
+    padding-bottom: 7.5rem;
+  }
+
+  .blessing__panel {
+    padding: 4rem 2rem;
+    border-radius: 28px;
+  }
+}
