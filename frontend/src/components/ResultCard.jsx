@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { site, telHref } from '../config/site.js';
+import { site } from '../config/site.js';
 import { maskPhone } from '../utils/phone.js';
 import Garland from './Garland.jsx';
 import './ResultCard.css';
@@ -14,8 +14,6 @@ function RegisteredMobile({ phone }) {
 }
 
 function WinnerResult({ name, phone, headingRef, onReset }) {
-  const claimPhone = site.contact.phones[0];
-
   return (
     <section className="result result--winner" aria-labelledby="result-title">
       <Garland />
@@ -37,9 +35,6 @@ function WinnerResult({ name, phone, headingRef, onReset }) {
         <p className="result__note">{site.event.winnerNote}</p>
 
         <div className="result__actions">
-          <a className="btn btn--gold" href={telHref(claimPhone)}>
-            Call {claimPhone}
-          </a>
           <button className="btn btn--outline" type="button" onClick={onReset}>
             Check another number
           </button>
@@ -60,10 +55,9 @@ function ParticipantResult({ name, phone, headingRef, onReset }) {
         <h2 className="result__title" id="result-title" ref={headingRef} tabIndex={-1}>
           Thank you for participating!
         </h2>
-        <p className="result__lead">Hi {name}!</p>
+        <p className="result__lead">{name ? `Hi ${name}!` : 'Thank you for checking your number!'}</p>
         <p className="result__note">
-          You participated in the {site.event.name}. Unfortunately, your number was not selected this time. Better
-          luck next time! 🙏
+          Unfortunately, your number was not selected this time. Better luck next time! 🙏
         </p>
 
         <RegisteredMobile phone={phone} />

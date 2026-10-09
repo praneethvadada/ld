@@ -49,10 +49,8 @@ if (participants.length === 0) {
   process.exit(1);
 }
 
-const winners = participants.filter((participant) => participant.isWinner).length;
 const summary =
-  `${participants.length} participants (${winners} winners, ${participants.length - winners} non-winners)` +
-  (errors.length ? `, ${errors.length} invalid row(s) left out` : '');
+  `${participants.length} winner(s)` + (errors.length ? `, ${errors.length} invalid row(s) left out` : '');
 
 if (flags.has('--dry-run')) {
   console.log(`\nDry run: ${summary}. Nothing was written.`);
@@ -60,7 +58,7 @@ if (flags.has('--dry-run')) {
 }
 
 const block = `PARTICIPANTS="\n${participants
-  .map(({ name, phone, isWinner }) => `${name},${phone},${isWinner}`)
+  .map(({ name, phone }) => `${name},${phone}`)
   .join('\n')}\n"`;
 
 // Start from the existing .env so the other settings are kept; fall back to the template.

@@ -5,7 +5,7 @@ immediately sees whether they won. The design follows the Devi Sridevi Enterpris
 
 - **Frontend:** React + Vite, plain CSS
 - **Backend:** Node.js + Express
-- **Data:** the participant list lives in `backend/.env` and nowhere else. There is no database.
+- **Data:** the winner list lives in `backend/.env` and nowhere else. There is no database.
 
 ## Project structure
 
@@ -15,7 +15,7 @@ immediately sees whether they won. The design follows the Devi Sridevi Enterpris
 │   │   ├── config/        environment loading
 │   │   ├── controllers/   request handling
 │   │   ├── middleware/    rate limiting, error handling
-│   │   ├── models/        participant list (parsed from .env, held in memory)
+│   │   ├── models/        winner list (parsed from .env, held in memory)
 │   │   ├── routes/
 │   │   ├── services/
 │   │   ├── utils/         phone number normalization
@@ -56,7 +56,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The API starts on `http://localhost:5050`. (`.env.example` ships with five sample participants.)
+The API starts on `http://localhost:5050`. (`.env.example` ships with three sample winners.)
 
 **2. Frontend**
 
@@ -77,23 +77,24 @@ Sample numbers to try:
 | 9876543212 | Winner (Suresh)     |
 | 9876543213 | Not a winner (Anil) |
 | 9876543214 | Winner (Kiran)      |
-| 9000000000 | Not found           |
+| 9000000000 | Better luck next time |
 
 > The backend defaults to port 5050 because macOS reserves port 5000 for AirPlay. Change `PORT` in
 > `backend/.env` if you prefer another port, and set `API_PROXY_TARGET` in `frontend/.env` to match.
 
 ## Participant data
 
-Participants are stored in the `PARTICIPANTS` entry of `backend/.env`, one per line:
+Winners are stored in the `PARTICIPANTS` entry of `backend/.env`, one per line:
 
 ```
 PARTICIPANTS="
-Praneeth,9876543210,true
-Rahul,9876543211,false
+Praneeth,9876543210
+Suresh,9876543212
 "
 ```
 
-Each line is `name,phone_number,is_winner`. The phone number is the unique key: every accepted way of writing a
+Each line is `name,phone_number`; every listed number is a winner. The legacy
+`name,phone_number,is_winner` format is also accepted. The phone number is the unique key: every accepted way of writing a
 number (`9876543210`, `+919876543210`, `+91 98765 43210`) is reduced to the same 10 digits, and a number can
 only appear once.
 
@@ -102,13 +103,13 @@ only appear once.
 1. In Excel or Google Sheets, save the sheet as **CSV** with these columns:
 
    ```
-   name,phone_number,is_winner
-   Praneeth,9876543210,true
-   Rahul,9876543211,false
+   name,phone_number
+   Praneeth,9876543210
+   Suresh,9876543212
    ```
 
-   Column titles such as `Participant Name`, `Phone Number`, `Mobile` and `Winner Status` are recognised too,
-   and the winner column accepts `true/false`, `yes/no`, `1/0` or `Winner/Not Winner`.
+   Column titles such as `Participant Name` and `Phone Number` are recognised too. An optional legacy winner
+   column is accepted, but every row without that column is treated as a winner.
 
 2. Check the sheet without changing anything:
 
@@ -117,7 +118,7 @@ only appear once.
    npm run seed -- /path/to/participants.csv --dry-run
    ```
 
-   Invalid numbers, unclear winner values and conflicting duplicates are listed with their Excel row numbers.
+   Invalid numbers and duplicate phone numbers are listed with their Excel row numbers.
 
 3. Import it:
 
@@ -129,6 +130,23 @@ only appear once.
    rows cannot be fixed, add `--skip-invalid` to import only the valid ones.
 
 4. Restart the backend so it loads the new list (`pm2 restart ganesh-lucky-draw-api` in production).
+
+To add or replace winners manually, edit the `PARTICIPANTS` block in `backend/.env` on the server:
+
+```env
+PARTICIPANTS="
+Praneeth,9876543210
+New Winner,9876543215
+"
+```
+
+Then restart the backend. The frontend does not need to be rebuilt when only the winner list changes:
+
+```bash
+pm2 restart ganesh-lucky-draw-api
+```
+
+If you use the CSV importer instead, it replaces the whole winner list, so include all winners in the CSV.
 
 Once imported, the CSV is no longer needed; delete it or keep it somewhere private. `.gitignore` already
 excludes `.env` and `*.csv` files.
@@ -145,7 +163,7 @@ excludes `.env` and `*.csv` files.
 | `RATE_LIMIT_WINDOW_MS` | `60000`                 | Rate-limit window in milliseconds.                               |
 | `RATE_LIMIT_MAX`       | `30`                    | Checks allowed per IP address in each window.                    |
 | `TRUST_PROXY`          | `0`                     | Reverse proxies in front of the API. Set to `1` behind Nginx.    |
-| `PARTICIPANTS`         | —                       | The participant list (see above).                                |
+| `PARTICIPANTS`         | —                       | The winner list (see above).                                     |
 
 The limit is 30 checks per minute rather than a tighter number because people at the venue often share one
 Wi-Fi or mobile-carrier IP address. Lower `RATE_LIMIT_MAX` if you see abuse.
@@ -172,7 +190,7 @@ Wi-Fi or mobile-carrier IP address. Lower `RATE_LIMIT_MAX` if you see abuse.
 | ------------ | ------ | --------------------------------------------------------------------- |
 | Winner       | 200    | `{ "success": true, "found": true, "winner": true, "name": "…" }`     |
 | Not a winner | 200    | `{ "success": true, "found": true, "winner": false, "name": "…" }`    |
-| Not found    | 200    | `{ "success": true, "found": false, "winner": false }`                |
+| Not a winner | 200    | `{ "success": true, "found": false, "winner": false }`                |
 | Invalid      | 400    | `{ "success": false, "error": "INVALID_PHONE", "message": "…" }`      |
 | Too many     | 429    | `{ "success": false, "error": "RATE_LIMITED", "message": "…" }`       |
 | Server error | 500    | `{ "success": false, "error": "SERVER_ERROR", "message": "…" }`       |

@@ -11,7 +11,7 @@ export const site = {
     titleLines: ['Sasya Ganapathi —', 'Lucky Draw Results'],
     intro:
       'Thank you for celebrating Ganesh Chaturthi with us. Enter your registered mobile number to check your lucky draw result.',
-    winnerNote: 'To collect your prize, please contact us with this registered mobile number.',
+    winnerNote: 'The Devi Sridevi Enterprises team will contact you soon.',
   },
 
   banner: {

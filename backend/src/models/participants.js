@@ -15,8 +15,9 @@ export function parseWinnerFlag(value) {
  * Parses the PARTICIPANTS value from .env.
  *
  * One record per line (or separated by ";"), each written as
- *   name,phone_number,is_winner
- * Fields are read from the right, so a name may itself contain commas.
+ *   name,phone_number
+ * The legacy third is_winner field is also accepted. Fields are read from the
+ * right, so a name may itself contain commas.
  *
  * The phone number is the unique key: a repeated number keeps its first record.
  */
@@ -32,12 +33,12 @@ export function parseParticipants(raw) {
   records.forEach((record, index) => {
     const position = index + 1;
     const fields = record.split(',');
-    if (fields.length < 3) {
-      problems.push(`record ${position}: expected "name,phone_number,is_winner"`);
+    if (fields.length < 2) {
+      problems.push(`record ${position}: expected "name,phone_number"`);
       return;
     }
 
-    const winner = parseWinnerFlag(fields.pop());
+    const winner = fields.length >= 3 ? parseWinnerFlag(fields.pop()) : true;
     const phone = normalizePhone(fields.pop());
     const name = fields.join(',').trim();
 

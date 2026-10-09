@@ -15,6 +15,14 @@ test('parses one record per line', () => {
   assert.deepEqual(participants.get('9876543211'), { name: 'Rahul', isWinner: false });
 });
 
+test('treats two-column records as winners', () => {
+  const { participants, problems } = parseParticipants('Praneeth,9876543210\nSuresh,9876543212');
+
+  assert.deepEqual(problems, []);
+  assert.deepEqual(participants.get('9876543210'), { name: 'Praneeth', isWinner: true });
+  assert.deepEqual(participants.get('9876543212'), { name: 'Suresh', isWinner: true });
+});
+
 test('also accepts a single line separated by semicolons', () => {
   const { participants } = parseParticipants('Praneeth,9876543210,true;Rahul,+91 98765 43211,no');
 
@@ -87,18 +95,17 @@ test('reports sheet problems with their Excel row numbers', () => {
   const { participants, errors, warnings } = readParticipantSheet(sheet);
 
   assert.equal(participants.length, 1);
-  assert.equal(warnings.length, 1);
+  assert.equal(warnings.length, 2);
   assert.match(warnings[0], /^Row 5:/);
-  assert.equal(errors.length, 4);
+  assert.equal(errors.length, 3);
   assert.match(errors[0], /^Row 3:/);
   assert.match(errors[1], /scientific notation/);
-  assert.match(errors[2], /^Row 6:.*different winner status/);
-  assert.match(errors[3], /^Row 7:/);
+  assert.match(errors[2], /^Row 7:/);
 });
 
 test('rejects a sheet without the expected columns', () => {
   const { participants, errors } = readParticipantSheet('first,second\nPraneeth,9876543210');
 
   assert.equal(participants.length, 0);
-  assert.match(errors[0], /Could not find: name, phone, winner/);
+  assert.match(errors[0], /Could not find: name, phone/);
 });

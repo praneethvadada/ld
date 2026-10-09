@@ -98,13 +98,13 @@ export function readParticipantSheet(text) {
     column[field] = headers.findIndex((header) => aliases.includes(header));
   }
 
-  const missing = Object.keys(column).filter((field) => column[field] === -1);
+  const missing = ['name', 'phone'].filter((field) => column[field] === -1);
   if (missing.length) {
     return {
       participants,
       warnings,
       errors: [
-        `Header row must contain name, phone_number and is_winner columns. ` +
+        `Header row must contain name and phone_number columns. ` +
           `Could not find: ${missing.join(', ')}. Found: ${rows[0].join(', ')}`,
       ],
     };
@@ -119,7 +119,7 @@ export function readParticipantSheet(text) {
     const name = cleanName(cells[column.name]);
     const rawPhone = cleanPhone(cells[column.phone]);
     const phone = normalizePhone(rawPhone);
-    const isWinner = parseWinnerFlag(cells[column.winner]);
+    const isWinner = column.winner === -1 ? true : parseWinnerFlag(cells[column.winner]);
 
     if (!name) {
       errors.push(`Row ${rowNumber}: name is empty.`);
@@ -136,16 +136,9 @@ export function readParticipantSheet(text) {
       errors.push(`Row ${rowNumber}: winner status "${cells[column.winner]}" must be true or false.`);
       return;
     }
-
     const earlier = seen.get(phone);
     if (earlier) {
-      if (earlier.isWinner === isWinner) {
-        warnings.push(`Row ${rowNumber}: same phone number as row ${earlier.rowNumber}, kept the first.`);
-      } else {
-        errors.push(
-          `Row ${rowNumber}: same phone number as row ${earlier.rowNumber} but a different winner status.`
-        );
-      }
+      warnings.push(`Row ${rowNumber}: same phone number as row ${earlier.rowNumber}, kept the first.`);
       return;
     }
 

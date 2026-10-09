@@ -4,9 +4,7 @@ import { findParticipantByPhone } from '../models/participants.js';
 export function getLuckyDrawResult(phone) {
   const participant = findParticipantByPhone(phone);
 
-  if (!participant) {
-    return { success: true, found: false, winner: false };
-  }
+  if (!participant) return { success: true, found: false, winner: false };
 
   return {
     success: true,

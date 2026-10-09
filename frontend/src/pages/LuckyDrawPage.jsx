@@ -19,7 +19,7 @@ const ERROR_MESSAGES = {
   SERVER: 'Something went wrong on our side. Please try again in a moment.',
 };
 
-// status: idle | loading | winner | participant | notFound | error
+// status: idle | loading | winner | participant | error
 const IDLE = { status: 'idle' };
 
 export default function LuckyDrawPage() {
@@ -34,7 +34,7 @@ export default function LuckyDrawPage() {
     setPhone(value);
     setFieldError('');
     // A message about the previous number no longer applies once the number changes.
-    if (lookup.status === 'notFound' || lookup.status === 'error') setLookup(IDLE);
+    if (lookup.status === 'error') setLookup(IDLE);
   }
 
   async function runCheck(number) {
@@ -42,11 +42,7 @@ export default function LuckyDrawPage() {
 
     try {
       const data = await checkLuckyDraw(number);
-      if (!data.found) {
-        setLookup({ status: 'notFound' });
-      } else {
-        setLookup({ status: data.winner ? 'winner' : 'participant', name: data.name, phone: number });
-      }
+      setLookup({ status: data.winner ? 'winner' : 'participant', name: data.name, phone: number });
     } catch (error) {
       if (error.code === 'INVALID_PHONE') {
         setFieldError('Please enter a valid 10-digit mobile number.');
@@ -117,11 +113,6 @@ export default function LuckyDrawPage() {
                 focusRequest={focusRequest}
               />
 
-              {lookup.status === 'notFound' && (
-                <Notice tone="warn" icon="🔍" title="Phone number not found">
-                  We couldn’t find this phone number. Please check the number and try again.
-                </Notice>
-              )}
               {lookup.status === 'error' && (
                 <Notice tone="error" icon="⚠️" title="We couldn’t check your result">
                   {lookup.message}
