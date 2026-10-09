@@ -12,7 +12,7 @@ test('parses one record per line', () => {
   assert.deepEqual(problems, []);
   assert.equal(participants.size, 2);
   assert.deepEqual(participants.get('9876543210'), { name: 'Praneeth', isWinner: true });
-  assert.deepEqual(participants.get('9876543211'), { name: 'Rahul', isWinner: false });
+  assert.deepEqual(participants.get('9876543211'), { name: 'Rahul', isWinner: true });
 });
 
 test('treats two-column records as winners', () => {
@@ -27,7 +27,7 @@ test('also accepts a single line separated by semicolons', () => {
   const { participants } = parseParticipants('Praneeth,9876543210,true;Rahul,+91 98765 43211,no');
 
   assert.equal(participants.size, 2);
-  assert.equal(participants.get('9876543211').isWinner, false);
+  assert.equal(participants.get('9876543211').isWinner, true);
 });
 
 test('keeps commas that are part of a name', () => {
@@ -46,9 +46,9 @@ test('stores a phone number once and reports the bad records', () => {
     incomplete
   `);
 
-  assert.equal(participants.size, 1);
+  assert.equal(participants.size, 2);
   assert.equal(participants.get('9876543210').name, 'Praneeth');
-  assert.equal(problems.length, 5);
+  assert.equal(problems.length, 4);
 });
 
 test('reads winner flags as written in spreadsheets', () => {
@@ -59,6 +59,16 @@ test('reads winner flags as written in spreadsheets', () => {
     assert.equal(parseWinnerFlag(value), false, String(value));
   }
   assert.equal(parseWinnerFlag('maybe'), null);
+});
+
+test('treats every listed number as a winner, including legacy records', () => {
+  const { participants, problems } = parseParticipants(`
+    Surya,9876543273,false
+    Praneeth,9876543210
+  `);
+
+  assert.deepEqual(problems, []);
+  assert.deepEqual(participants.get('9876543273'), { name: 'Surya', isWinner: true });
 });
 
 test('reads a participant sheet with flexible headers, quotes and a BOM', () => {

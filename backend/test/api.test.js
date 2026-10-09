@@ -43,10 +43,10 @@ describe('POST /api/lucky-draw/check', () => {
     assert.deepEqual(await response.json(), { success: true, found: true, winner: true, name: 'Praneeth' });
   });
 
-  test('returns the non-winner result', async () => {
+  test('treats every listed number as a winner', async () => {
     const response = await check(baseUrl, { phoneNumber: '9876543211' });
 
-    assert.deepEqual(await response.json(), { success: true, found: true, winner: false, name: 'Rahul' });
+    assert.deepEqual(await response.json(), { success: true, found: true, winner: true, name: 'Rahul' });
   });
 
   test('returns not found without leaking anything else', async () => {

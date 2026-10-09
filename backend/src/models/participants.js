@@ -38,16 +38,14 @@ export function parseParticipants(raw) {
       return;
     }
 
-    const winner = fields.length >= 3 ? parseWinnerFlag(fields.pop()) : true;
+    // The winner list is authoritative: every valid listed number is a winner.
+    // Ignore a legacy third column so old .env entries cannot downgrade a winner.
+    if (fields.length >= 3) fields.pop();
     const phone = normalizePhone(fields.pop());
     const name = fields.join(',').trim();
 
     if (!phone) {
       problems.push(`record ${position}: invalid phone number`);
-      return;
-    }
-    if (winner === null) {
-      problems.push(`record ${position}: is_winner must be true or false`);
       return;
     }
     if (!name) {
@@ -59,7 +57,7 @@ export function parseParticipants(raw) {
       return;
     }
 
-    participants.set(phone, { name, isWinner: winner });
+    participants.set(phone, { name, isWinner: true });
   });
 
   return { participants, problems };
